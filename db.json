@@ -1,5 +1,13 @@
 {
-  "logs": [],
+  "logs": [
+    {
+      "message": "sdsdsdsd",
+      "attention": true,
+      "tech": "Jennifer Williams",
+      "date": "2019-07-21T01:56:03.268Z",
+      "id": 1
+    }
+  ],
   "techs": [
     {
       "id": 1,

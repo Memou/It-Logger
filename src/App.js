@@ -22,7 +22,6 @@ const App = () => {
 
   return (
     <Provider store={store}>
-
     <Fragment>
       <SearchBar />
       <div className="container">
@@ -31,7 +30,6 @@ const App = () => {
         <EditLogModal />
         <AddTechModal />
         <TechListModal />
-        
         <Logs />
       </div>
     </Fragment>
