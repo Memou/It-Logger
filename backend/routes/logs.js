@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
+const { check, validationResult } = require('express-validator');
 
 const Log = require('../models/Log');
 
@@ -21,9 +21,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:text', async (req, res) => {
   try {
-    
     const textParam = req.params.text;
-    const logs = await Log.find({ message: { $regex: `/^${textParam}/gi` } });
+    const logs = await Log.find({message:{'$regex' : `^${textParam}` , '$options' : 'i'}})
     res.json(logs);
   } catch (err) {
     console.error(err.message);
@@ -31,7 +30,14 @@ router.get('/:text', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/',[
+      check('message', 'Message is required')
+        .not()
+        .isEmpty(),
+        check('tech', 'Tech is required')
+        .not()
+        .isEmpty()
+    ] ,async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -67,6 +73,7 @@ router.put('/:id', async (req, res) => {
 
   if (message) logFields.message = message;
   if (tech) logFields.tech = tech;
+  console.log(tech)
   if (attention) logFields.attention = attention;
   if (date) logFields.date = date;
   try {
@@ -76,7 +83,7 @@ router.put('/:id', async (req, res) => {
     log = await Log.findByIdAndUpdate(
       req.params.id,
       { $set: logFields },
-      { new: true }
+      { new: true },
     );
 
     res.json(log);

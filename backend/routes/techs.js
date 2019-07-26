@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator/check');
+const { check, validationResult } = require('express-validator');
 
 const Tech = require('../models/Tech');
 
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     const techs = await Tech.find({}).sort({
       date: -1
     });
-    
+
     res.json(techs);
   } catch (err) {
     console.error(err.message);
@@ -23,28 +23,39 @@ router.get('/', async (req, res) => {
 // @route     POST api/techs
 // @desc      Add new tech
 // @access    Public
-router.post('/', async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+router.post(
+  '/',
+  [
+    check('firstName', 'First Name is required')
+      .not()
+      .isEmpty(),
+    check('lastName', 'Last Name is required')
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { firstName, lastName } = req.body;
+
+    try {
+      const newTech = new Tech({
+        firstName,
+        lastName
+      });
+
+      const tech = await newTech.save();
+
+      res.json(tech);
+    } catch (err) {
+      console.error(er.message);
+      res.status(500).send('Server Error');
+    }
   }
-
-  const { firstName, lastName } = req.body;
-
-  try {
-    const newTech = new Tech({
-      firstName,
-      lastName
-    });
-
-    const tech = await newTech.save();
-
-    res.json(tech);
-  } catch (err) {
-    console.error(er.message);
-    res.status(500).send('Server Error');
-  }
-});
+);
 
 // @route     PUT api/contacts/:id
 // @desc      Update tech

@@ -109,10 +109,8 @@ export const updateLog = log => async dispatch => {
 export const searchLogs = text => async dispatch => {
   try {
     setLoading();
-
-    const res = await fetch(`api/logs?q=${text}`);
+    const res = await fetch(`api/logs/${text}`);
     const data = await res.json();
-
     dispatch({
       type: SEARCH_LOGS,
       payload: data
