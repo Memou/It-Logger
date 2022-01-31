@@ -74,7 +74,7 @@ router.put('/:id', async (req, res) => {
   if (message) logFields.message = message;
   if (tech) logFields.tech = tech;
   console.log(tech)
-  if (attention) logFields.attention = attention;
+  if (attention || !attention) logFields.attention = attention;  //FIXED
   if (date) logFields.date = date;
   try {
     let log = await Log.findById(req.params.id);
